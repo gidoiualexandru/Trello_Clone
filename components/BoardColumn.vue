@@ -12,9 +12,10 @@ const props = defineProps({
   }
 })
 
+const toast = useToast()
 const boardStore = useBoardStore()
 const router = useRouter()
-
+const columnName = props.column.name;
 const editNameState = ref(false)
 const newTaskName = ref('')
 
@@ -23,10 +24,22 @@ function addTask() {
     taskName: newTaskName.value,
     columnIndex: props.columnIndex
   })
+  toast.add({
+        title: 'Task Added',
+        description: `New task added to column: ${columnName}`,
+        icon: 'i-heroicons-check',
+        color: 'green'
+    });
   newTaskName.value = ''
 }
 
 function deleteColumn(columnIndex) {
+  toast.add({
+    title: 'Column has been deleted',
+    description: `${columnName} has been deleted.`,
+    icon: 'i-heroicons-trash',
+    color: 'red'
+  })
   boardStore.deleteColumn(columnIndex)
 }
 

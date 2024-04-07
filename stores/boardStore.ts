@@ -3,12 +3,11 @@ import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import boardData from '~/data/board.json'
 
+const toast = useToast()
+
 export const useBoardStore = defineStore('boardStore', () => {
   const board = useStorage('board', boardData)
 
-  /**
-   * Tasks
-   */
   const getTask = computed(() => {
     return taskId => {
       for (const column of board.value.columns) {
@@ -51,15 +50,19 @@ export const useBoardStore = defineStore('boardStore', () => {
     board.value.columns[toColumnIndex].tasks.splice(toTaskIndex, 0, task)
   }
 
-  /**
-   * Columns
-   */
+
   function addColumn(columnName) {
     board.value.columns.push({
-      name: columnName,
-      tasks: []
-    })
-  }
+        name: columnName,
+        tasks: []
+    });
+    toast.add({
+        title: 'Column Added',
+        description: `New column "${columnName}" has been added.`,
+        icon: 'i-heroicons-check',
+        color: 'green'
+    });
+}
 
   function deleteColumn(columnIndex) {
     board.value.columns.splice(columnIndex, 1)
@@ -71,11 +74,8 @@ export const useBoardStore = defineStore('boardStore', () => {
   }
 
   return {
-    /* State */
     board,
-    /* Getters */
     getTask,
-    /* Actions*/
     addColumn,
     addTask,
     deleteColumn,
